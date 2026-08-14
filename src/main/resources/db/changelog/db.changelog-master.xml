@@ -7,5 +7,15 @@
 
     <!-- Подключаем наш SQL-файл со всеми таблицами -->
     <include file="db/changelog/changesets/01-init-schema.sql"/>
+    <changeSet id="add-user-id-to-tickets" author="dev">
+        <addColumn tableName="tickets">
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_tickets_user"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
