@@ -8,11 +8,12 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.TicketRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TicketService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
@@ -48,6 +49,7 @@ public class TicketServiceImpl implements TicketService {
         ticketResponseDto.setPriority(ticket.getPriority());
         ticketResponseDto.setStatus(ticket.getStatus());
         ticketResponseDto.setId(ticket.getId());
+        ticketResponseDto.setTitle(ticket.getTitle());
         return ticketResponseDto;
     }
 

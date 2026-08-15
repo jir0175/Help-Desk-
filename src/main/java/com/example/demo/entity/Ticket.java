@@ -34,7 +34,7 @@ public class Ticket {
     private String priority;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = false)
     private User author; //
 
     @Column(name="created_at",nullable = false)

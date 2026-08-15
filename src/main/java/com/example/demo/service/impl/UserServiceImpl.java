@@ -6,9 +6,10 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class  UserServiceImpl implements UserService  {
