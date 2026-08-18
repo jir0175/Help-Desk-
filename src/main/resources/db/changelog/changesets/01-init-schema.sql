@@ -73,3 +73,5 @@ CREATE TABLE ticket_histories (
                                   FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
                                   FOREIGN KEY (changed_by) REFERENCES users(id)
 );
+--changeset haru:8
+INSERT INTO roles(name) VALUES ('ROLE_ADMIN'), ('ROLE_USER')

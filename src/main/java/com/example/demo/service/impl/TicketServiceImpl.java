@@ -8,18 +8,21 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.TicketRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TicketService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-@Transactional
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
     @Override
+    @Transactional
     public TicketResponseDto createTicket(TicketCreateDto ticketCreateDto,java.util.UUID author){
         User userAuthor = userRepository.findById(author)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + author));
@@ -52,6 +55,37 @@ public class TicketServiceImpl implements TicketService {
         ticketResponseDto.setTitle(ticket.getTitle());
         return ticketResponseDto;
     }
+    @Transactional
+    @Override
+    public TicketResponseDto updateStatus(UUID id,String status){
+        Ticket ticket = ticketRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+        ticket.setStatus(status);
+        TicketResponseDto newTicket = new TicketResponseDto();
+        newTicket.setAuthorUsername(ticket.getAuthor().getUsername());
+        newTicket.setDescription(ticket.getDescription());
+        newTicket.setPriority(ticket.getPriority());
+        newTicket.setStatus(ticket.getStatus());
+        newTicket.setId(ticket.getId());
+        newTicket.setTitle(ticket.getTitle());
+        return newTicket;
+    }
+    @Override
+    public List<TicketResponseDto> getAllTickets(){
+        List<Ticket> tickets = ticketRepository.findAll();
+        List<TicketResponseDto> allTickets = new ArrayList<>();
+        for (Ticket ticket: tickets){
+            TicketResponseDto dto = new TicketResponseDto();
+            dto.setId(ticket.getId());
+            dto.setTitle(ticket.getTitle());
+            dto.setDescription(ticket.getDescription());
+            dto.setStatus(ticket.getStatus());
+            dto.setPriority(ticket.getPriority());
+            dto.setAuthorUsername(ticket.getAuthor().getUsername());
+            allTickets.add(dto);
+        }
+        return allTickets;
 
+    }
 
 }
