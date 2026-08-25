@@ -11,6 +11,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class  UserServiceImpl implements UserService  {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     @Override
-    public UserResponseDto registerUser(UserRegisterDto registerDto){
+    public UserResponseDto registerUser(@NonNull UserRegisterDto registerDto){
         if (userRepository.existsByEmail(registerDto.getEmail())){
             throw new UserAlreadyExistsException("Email is already taken!");
         };
