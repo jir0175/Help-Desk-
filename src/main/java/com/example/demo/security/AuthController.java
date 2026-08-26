@@ -51,17 +51,6 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-//Регистрация
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Ошибка: Имя пользователя уже занято!");
-        }
 
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        userRepository.save(user);
-
-        return ResponseEntity.ok("Пользователь успешно зарегистрирован!");
-    }
 
 }

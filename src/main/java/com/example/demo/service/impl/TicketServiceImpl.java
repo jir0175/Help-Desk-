@@ -68,11 +68,12 @@ public class TicketServiceImpl implements TicketService {
         newTicket.setStatus(ticket.getStatus());
         newTicket.setId(ticket.getId());
         newTicket.setTitle(ticket.getTitle());
+        ticketRepository.save(ticket);
         return newTicket;
     }
     @Override
     public List<TicketResponseDto> getAllTickets(){
-        List<Ticket> tickets = ticketRepository.findAll();
+        List<Ticket> tickets = ticketRepository.findAllWithAuthor();
         List<TicketResponseDto> allTickets = new ArrayList<>();
         for (Ticket ticket: tickets){
             TicketResponseDto dto = new TicketResponseDto();
