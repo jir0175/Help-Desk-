@@ -8,6 +8,8 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.TicketRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TicketService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,7 @@ public class TicketServiceImpl implements TicketService {
         return ticketResponse;
     };
     @Override
+    @Cacheable(value = "tickets", key = "#id")
     public TicketResponseDto getTicketById(UUID id){
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
@@ -57,6 +60,7 @@ public class TicketServiceImpl implements TicketService {
     }
     @Transactional
     @Override
+    @CacheEvict(value = "tickets", key = "#id")
     public TicketResponseDto updateStatus(UUID id,String status){
         Ticket ticket = ticketRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
