@@ -1,12 +1,14 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.TicketCreateDto;
+import com.example.demo.dto.TicketCreatedEvent;
 import com.example.demo.dto.TicketResponseDto;
 import com.example.demo.entity.Ticket;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.TicketRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.KafkaProducerService;
 import com.example.demo.service.TicketService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class TicketServiceImpl implements TicketService {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
+    private final KafkaProducerService kafkaProducerService;
     @Override
     @Transactional
     public TicketResponseDto createTicket(TicketCreateDto ticketCreateDto,java.util.UUID author){
@@ -35,6 +38,13 @@ public class TicketServiceImpl implements TicketService {
         ticket.setTitle(ticketCreateDto.getTitle());
         ticket.setStatus("NEW");
         Ticket savedTicket = ticketRepository.save(ticket);
+        TicketCreatedEvent event = new TicketCreatedEvent(
+                savedTicket.getId(),
+                savedTicket.getTitle(),
+                userAuthor.getEmail(),
+                savedTicket.getStatus()
+        );
+        kafkaProducerService.sendTicketCreatedEvent(event);
         TicketResponseDto ticketResponse = new TicketResponseDto();
         ticketResponse.setStatus(savedTicket.getStatus());
         ticketResponse.setPriority(savedTicket.getPriority());

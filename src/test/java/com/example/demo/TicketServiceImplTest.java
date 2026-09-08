@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.dto.TicketResponseDto;
 import com.example.demo.entity.Ticket;
+import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.TicketRepository;
 import com.example.demo.service.impl.TicketServiceImpl;
@@ -28,16 +29,24 @@ public class TicketServiceImplTest {
     @Test
     void getTicketById_Success(){
         UUID ticketId = UUID.randomUUID();
+
+        User author = new User();
+        author.setUsername("test_user");
+
         Ticket ticket = new Ticket();
         ticket.setId(ticketId);
         ticket.setTitle("тестовый тайтл");
-        ticket.setStatus("Тестовый статус");
+        ticket.setStatus("NEW");
+        ticket.setAuthor(author); //
+
         when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticket));
+
         TicketResponseDto result = ticketService.getTicketById(ticketId);
+
         assertNotNull(result);
-        assertEquals(ticketId,result.getId());
-        assertEquals("тестовый тайтл",result.getTitle());
-        verify(ticketRepository,times(1)).findById(ticketId);
+        assertEquals(ticketId, result.getId());
+        assertEquals("test_user", result.getAuthorUsername());
+        verify(ticketRepository, times(1)).findById(ticketId);
     }
     @Test
     void getTicketById_NotFound_ThrowsException(){
